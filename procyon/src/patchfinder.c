@@ -931,7 +931,7 @@ int run_patchfinder(void) {
     kcache = NULL;
     int status = -1;
 
-    if ((kcache = kcache_open("/System/Library/Caches/com.apple.kernelcaches/kernelcache")) == NULL) goto done;
+    if ((kcache = kcache_open("/mnt1/System/Library/Caches/com.apple.kernelcaches/kernelcache")) == NULL) goto done;
     if ((procyon->offsets.kernel.proc_enforce = find_patch_offset(find_proc_enforce, false)) == 0) goto done;
     if ((procyon->offsets.kernel.ret1_gadget = find_patch_offset(find_mov_r0_1_bx_lr, false)) == 0) goto done;
     if ((procyon->offsets.kernel.pid_check = find_patch_offset(find_pid_check, false)) == 0) goto done;

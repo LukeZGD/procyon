@@ -9,8 +9,8 @@ int gen_stage3(void) {
         return -1;
     }
 
-    unlink("/var/root/procyon/stage3.bin");
-    int fd = open("/var/root/procyon/stage3.bin", O_RDWR|O_CREAT, 0777);
+    unlink("/mnt1/private/var/root/procyon/stage3.bin");
+    int fd = open("/mnt1/private/var/root/procyon/stage3.bin", O_RDWR|O_CREAT, 0777);
     if (fd < 0) {
         print_log(true, "[-] failed to create /var/root/procyon/stage3.bin\n");
         return -1;

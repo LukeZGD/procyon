@@ -3,11 +3,11 @@
 
 int uninstall(void) {
     procyon_restore_backup();
-    remove_at_path("/var/root/procyon");
-    remove_at_path("/etc/racoon/stage2");
+    remove_at_path("/mnt1/private/var/root/procyon");
+    remove_at_path("/mnt1/private/etc/racoon/stage2");
 
-    sync_volume("/private/var");
-    sync_volume("/");
+    sync_volume("/mnt1/private/var");
+    sync_volume("/mnt1/");
     usleep(250000);
     return 0;
 }
@@ -19,17 +19,17 @@ int update(void) {
         return -1;
     }
     
-    remove_at_path("/etc/racoon/racoon.conf");
+    remove_at_path("/mnt1/private/etc/racoon/racoon.conf");
     if (procyon->use_dhcpd) {
-        remove_at_path("/etc/dhcpd.conf");
+        remove_at_path("/mnt1/private/etc/dhcpd.conf");
     }
 
-    remove_at_path("/var/root/procyon/stage1");
-    remove_at_path("/etc/racoon/stage2");
-    remove_at_path("/var/root/procyon/stage3.bin");
+    remove_at_path("/mnt1/private/var/root/procyon/stage1");
+    remove_at_path("/mnt1/private/etc/racoon/stage2");
+    remove_at_path("/mnt1/private/var/root/procyon/stage3.bin");
 
-    mkdir("/var/root/procyon/stage1", 0777);
-    chown("/var/root/procyon/stage1", 0, 0);
+    mkdir("/mnt1/private/var/root/procyon/stage1", 0777);
+    chown("/mnt1/private/var/root/procyon/stage1", 0, 0);
     int status = -1;
 
     if (gen_stage1() != 0) {
@@ -48,8 +48,8 @@ int update(void) {
     }
 
     print_log(false, "[*] cleaning up...\n");
-    sync_volume("/private/var");
-    sync_volume("/");
+    sync_volume("/mnt1/private/var");
+    sync_volume("/mnt1/");
     usleep(250000);
     status = 0;
 
@@ -61,7 +61,7 @@ done:
 
 
 int install(void) {
-    if (access("/var/root/procyon", F_OK) == 0) return update();
+    if (access("/mnt1/private/var/root/procyon", F_OK) == 0) return update();
     print_log(false, "[*] installing untether, this will take a few minutes...\n");
     
     if (procyon_init() != 0) {
@@ -69,10 +69,10 @@ int install(void) {
         return -1;
     }
 
-    mkdir("/var/root/procyon", 0777);
-    chown("/var/root/procyon", 0, 0);
-    mkdir("/var/root/procyon/stage1", 0777);
-    chown("/var/root/procyon/stage1", 0, 0);
+    mkdir("/mnt1/private/var/root/procyon", 0777);
+    chown("/mnt1/private/var/root/procyon", 0, 0);
+    mkdir("/mnt1/private/var/root/procyon/stage1", 0777);
+    chown("/mnt1/private/var/root/procyon/stage1", 0, 0);
     int status = -1;
 
     if (procyon_create_backup() != 0) {
@@ -87,10 +87,10 @@ int install(void) {
         goto done;
     }
 
-    move_file("/var/db/com.apple.xpc.launchd/disabled.plist", "/var/db/com.apple.xpc.launchd/disabled_orig.plist", true);
-    chmod("/var/db/com.apple.xpc.launchd/disabled_orig.plist", 0400);
+    move_file("/mnt1/private/var/db/com.apple.xpc.launchd/disabled.plist", "/mnt1/private/var/db/com.apple.xpc.launchd/disabled_orig.plist", true);
+    chmod("/mnt1/private/var/db/com.apple.xpc.launchd/disabled_orig.plist", 0400);
 
-    int fd = open("/var/db/com.apple.xpc.launchd/disabled.plist", O_RDWR|O_CREAT, 0644);
+    int fd = open("/mnt1/private/var/db/com.apple.xpc.launchd/disabled.plist", O_RDWR|O_CREAT, 0644);
     if (fd < 0) {
         print_log(true, "[-] failed to create /var/db/com.apple.xpc.launchd/disabled.plist\n");
         goto done;
@@ -100,15 +100,15 @@ int install(void) {
     fcntl(fd, F_FULLFSYNC);
     close(fd);
     
-    chown("/var/db/com.apple.xpc.launchd/disabled.plist", 0, 0);
-    move_file("/usr/libexec/wifiFirmwareLoaderLegacy", "/usr/libexec/wifiFirmwareLoaderLegacy_orig", true);
-    remove_at_path("/etc/racoon/racoon.conf");
+    chown("/mnt1/private/var/db/com.apple.xpc.launchd/disabled.plist", 0, 0);
+    move_file("/mnt1/usr/libexec/wifiFirmwareLoaderLegacy", "/mnt1/usr/libexec/wifiFirmwareLoaderLegacy_orig", true);
+    remove_at_path("/mnt1/private/etc/racoon/racoon.conf");
 
     if (procyon->use_dhcpd) {
-        symlink("/usr/libexec/dhcpd", "/usr/libexec/wifiFirmwareLoaderLegacy");
-        remove_at_path("/etc/dhcpd.conf");
+        symlink("/mnt1/usr/libexec/dhcpd", "/mnt1/usr/libexec/wifiFirmwareLoaderLegacy");
+        remove_at_path("/mnt1/private/etc/dhcpd.conf");
     } else {
-        symlink("/usr/sbin/racoon", "/usr/libexec/wifiFirmwareLoaderLegacy");
+        symlink("/mnt1/usr/sbin/racoon", "/mnt1/usr/libexec/wifiFirmwareLoaderLegacy");
     }
 
     if (gen_stage1() != 0) {
@@ -127,8 +127,8 @@ int install(void) {
     }
 
     print_log(false, "[*] cleaning up...\n");
-    sync_volume("/private/var");
-    sync_volume("/");
+    sync_volume("/mnt1/private/var");
+    sync_volume("/mnt1/");
     usleep(250000);
     status = 0;
 

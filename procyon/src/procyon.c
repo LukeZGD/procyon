@@ -199,55 +199,55 @@ err:
 }
 
 int procyon_create_backup(void) {
-    if (access("/var/root/procyon/backup", F_OK) == 0) return 0;
-    mkdir("/var/root/procyon/backup", 0777);
-    chown("/var/root/procyon/backup", 0, 0);
-    if (access("/var/root/procyon/backup", F_OK) != 0) return -1;
+    if (access("/mnt1/private/var/root/procyon/backup", F_OK) == 0) return 0;
+    mkdir("/mnt1/private/var/root/procyon/backup", 0777);
+    chown("/mnt1/private/var/root/procyon/backup", 0, 0);
+    if (access("/mnt1/private/var/root/procyon/backup", F_OK) != 0) return -1;
 
-    copy_file("/etc/racoon/racoon.conf", "/var/root/procyon/backup/racoon.conf");
+    copy_file("/mnt1/private/etc/racoon/racoon.conf", "/mnt1/private/var/root/procyon/backup/racoon.conf");
     if (procyon->use_dhcpd) {
-        copy_file("/etc/dhcpd.conf", "/var/root/procyon/backup/dhcpd.conf");
+        copy_file("/mnt1/private/etc/dhcpd.conf", "/mnt1/private/var/root/procyon/backup/dhcpd.conf");
     }
 
-    copy_file("/usr/libexec/backboardd", "/var/root/procyon/backup/backboardd");
-    copy_file("/usr/libexec/wifiFirmwareLoaderLegacy", "/var/root/procyon/backup/wifiFirmwareLoaderLegacy");
-    copy_file("/var/db/com.apple.xpc.launchd/disabled.plist", "/var/root/procyon/backup/disabled.plist");
-    sync_volume("/private/var");
+    copy_file("/mnt1/usr/libexec/backboardd", "/mnt1/private/var/root/procyon/backup/backboardd");
+    copy_file("/mnt1/usr/libexec/wifiFirmwareLoaderLegacy", "/mnt1/private/var/root/procyon/backup/wifiFirmwareLoaderLegacy");
+    copy_file("/mnt1/private/var/db/com.apple.xpc.launchd/disabled.plist", "/mnt1/private/var/root/procyon/backup/disabled.plist");
+    sync_volume("/mnt1/private/var");
     return 0;
 }
 
 int procyon_restore_backup(void) {
-    if (access("/var/root/procyon/backup/racoon.conf", F_OK) == 0) {
-        remove_at_path("/etc/racoon/racoon.conf");
-        copy_file("/var/root/procyon/backup/racoon.conf", "/etc/racoon/racoon.conf");
+    if (access("/mnt1/private/var/root/procyon/backup/racoon.conf", F_OK) == 0) {
+        remove_at_path("/mnt1/private/etc/racoon/racoon.conf");
+        copy_file("/mnt1/private/var/root/procyon/backup/racoon.conf", "/mnt1/private/etc/racoon/racoon.conf");
     }
 
-    if (access("/var/root/procyon/backup/dhcpd.conf", F_OK) == 0) {
-        remove_at_path("/etc/dhcpd.conf");
-        copy_file("/var/root/procyon/backup/dhcpd.conf", "/etc/dhcpd.conf");
+    if (access("/mnt1/private/var/root/procyon/backup/dhcpd.conf", F_OK) == 0) {
+        remove_at_path("/mnt1/private/etc/dhcpd.conf");
+        copy_file("/mnt1/private/var/root/procyon/backup/dhcpd.conf", "/mnt1/private/etc/dhcpd.conf");
     }
 
-    if (access("/var/root/procyon/backup/backboardd", F_OK) == 0) {
-        remove_at_path("/usr/libexec/backboardd");
-        copy_file("/var/root/procyon/backup/backboardd", "/usr/libexec/backboardd");
+    if (access("/mnt1/private/var/root/procyon/backup/backboardd", F_OK) == 0) {
+        remove_at_path("/mnt1/usr/libexec/backboardd");
+        copy_file("/mnt1/private/var/root/procyon/backup/backboardd", "/mnt1/usr/libexec/backboardd");
     }
  
-    if (access("/var/root/procyon/backup/wifiFirmwareLoaderLegacy", F_OK) == 0) {
-        remove_at_path("/usr/libexec/wifiFirmwareLoaderLegacy");
-        copy_file("/var/root/procyon/backup/wifiFirmwareLoaderLegacy", "/usr/libexec/wifiFirmwareLoaderLegacy");
-    } else if (access("/usr/libexec/wifiFirmwareLoaderLegacy_orig", F_OK) == 0) {
-        remove_at_path("/usr/libexec/wifiFirmwareLoaderLegacy");
-        move_file("/usr/libexec/wifiFirmwareLoaderLegacy_orig", "/usr/libexec/wifiFirmwareLoaderLegacy", true);
+    if (access("/mnt1/private/var/root/procyon/backup/wifiFirmwareLoaderLegacy", F_OK) == 0) {
+        remove_at_path("/mnt1/usr/libexec/wifiFirmwareLoaderLegacy");
+        copy_file("/mnt1/private/var/root/procyon/backup/wifiFirmwareLoaderLegacy", "/mnt1/usr/libexec/wifiFirmwareLoaderLegacy");
+    } else if (access("/mnt1/usr/libexec/wifiFirmwareLoaderLegacy_orig", F_OK) == 0) {
+        remove_at_path("/mnt1/usr/libexec/wifiFirmwareLoaderLegacy");
+        move_file("/mnt1/usr/libexec/wifiFirmwareLoaderLegacy_orig", "/mnt1/usr/libexec/wifiFirmwareLoaderLegacy", true);
     }
 
-    if (access("/var/root/procyon/backup/disabled.plist", F_OK) == 0) {
-        remove_at_path("/var/db/com.apple.xpc.launchd/disabled.plist");
-        copy_file("/var/root/procyon/backup/disabled.plist", "/var/db/com.apple.xpc.launchd/disabled.plist");
+    if (access("/mnt1/private/var/root/procyon/backup/disabled.plist", F_OK) == 0) {
+        remove_at_path("/mnt1/private/var/db/com.apple.xpc.launchd/disabled.plist");
+        copy_file("/mnt1/private/var/root/procyon/backup/disabled.plist", "/mnt1/private/var/db/com.apple.xpc.launchd/disabled.plist");
     } else {
-        remove_at_path("/var/db/com.apple.xpc.launchd/disabled.plist");
-        remove_at_path("/var/db/com.apple.xpc.launchd/disabled_orig.plist");
+        remove_at_path("/mnt1/private/var/db/com.apple.xpc.launchd/disabled.plist");
+        remove_at_path("/mnt1/private/var/db/com.apple.xpc.launchd/disabled_orig.plist");
     }
 
-    sync_volume("/");
+    sync_volume("/mnt1/");
     return 0;
 }

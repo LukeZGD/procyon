@@ -3,8 +3,8 @@
 
 #include "common.h"
 
-#define DSC_PATH_ARMV7 "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_armv7"
-#define DSC_PATH_ARMV7S "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_armv7s"
+#define DSC_PATH_ARMV7 "/mnt1/System/Library/Caches/com.apple.dyld/dyld_shared_cache_armv7"
+#define DSC_PATH_ARMV7S "/mnt1/System/Library/Caches/com.apple.dyld/dyld_shared_cache_armv7s"
 
 typedef struct {
     char magic[16];
