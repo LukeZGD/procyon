@@ -568,11 +568,11 @@ int gen_stage2(void) {
     rop_repair_data();
 
     // setup jsc and stage3
-    rop_dlopen(rop_string("/mnt1/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore"), RTLD_NOW);
+    rop_dlopen(rop_string("/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore"), RTLD_NOW);
     rop_js_context_create(js_ctx);
     rop_js_context_get_global(js_global, js_ctx);
 
-    rop_open(rop_string("/mnt1/private/var/root/procyon/stage3.bin"), O_RDONLY);
+    rop_open(rop_string("/var/root/procyon/stage3.bin"), O_RDONLY);
     rop_save_return_value(js_script_fd);
     rop_mmap(procyon->stage3.mapping_base, procyon->stage3.mapping_size, PROT_READ, MAP_FILE | MAP_PRIVATE | MAP_FIXED, js_script_fd, 0);
 
